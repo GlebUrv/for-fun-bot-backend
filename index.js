@@ -75,36 +75,39 @@ bot.on("message", async (msg) => {
   //   bot.sendMessage(chatId, "Received your message");
 });
 
-app.post("/web-data", async (req, res) => {
-  const { queryId, products, totalPrice } = req.body;
+app.post(
+  "https://for-fun-bot-backend.onrender.com/web-data",
+  async (req, res) => {
+    const { queryId, products, totalPrice } = req.body;
 
-  if (!queryId || !products || !totalPrice) {
-    return res.status(400).send("Invalid request");
-  }
+    if (!queryId || !products || !totalPrice) {
+      return res.status(400).send("Invalid request");
+    }
 
-  try {
-    await bot.answerWebAppQuery(queryId, {
-      type: "article",
-      id: queryId,
-      title: "Заказ оформлен",
-      input_message_content: {
-        message_text:
-          `Вы оформили заказ. Общая стоимость` + totalPrice + " руб.",
-      },
-    });
-    return res.status(200).send("Заказ оформлен успешно");
-  } catch (error) {
-    await bot.answerWebAppQuery(queryId, {
-      type: "article",
-      id: queryId,
-      title: "Ошибка",
-      input_message_content: {
-        message_text: "Произошла ошибка при оформлении заказа.",
-      },
-    });
-    return res.status(500).send("Ошибка при оформлении заказа");
+    try {
+      await bot.answerWebAppQuery(queryId, {
+        type: "article",
+        id: queryId,
+        title: "Заказ оформлен",
+        input_message_content: {
+          message_text:
+            `Вы оформили заказ. Общая стоимость` + totalPrice + " руб.",
+        },
+      });
+      return res.status(200).send("Заказ оформлен успешно");
+    } catch (error) {
+      await bot.answerWebAppQuery(queryId, {
+        type: "article",
+        id: queryId,
+        title: "Ошибка",
+        input_message_content: {
+          message_text: "Произошла ошибка при оформлении заказа.",
+        },
+      });
+      return res.status(500).send("Ошибка при оформлении заказа");
+    }
   }
-});
+);
 
 const PORT = 3000;
 app.listen(PORT, () => {
